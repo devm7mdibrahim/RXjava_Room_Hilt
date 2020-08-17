@@ -8,7 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 
 public class UserLocalDataSourceImpl implements UserLocalDataSource {
@@ -26,7 +26,7 @@ public class UserLocalDataSourceImpl implements UserLocalDataSource {
     }
 
     @Override
-    public Flowable<List<User>> getAllUsers() {
+    public Single<List<User>> getAllUsers() {
         return userDao.getAllUsers();
     }
 }

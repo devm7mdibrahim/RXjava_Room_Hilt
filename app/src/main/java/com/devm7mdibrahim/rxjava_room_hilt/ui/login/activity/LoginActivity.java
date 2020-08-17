@@ -2,7 +2,6 @@ package com.devm7mdibrahim.rxjava_room_hilt.ui.login.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -16,6 +15,8 @@ import com.devm7mdibrahim.rxjava_room_hilt.data.local.entity.User;
 import com.devm7mdibrahim.rxjava_room_hilt.databinding.ActivityLoginBinding;
 import com.devm7mdibrahim.rxjava_room_hilt.ui.login.viewModel.LoginViewModel;
 import com.devm7mdibrahim.rxjava_room_hilt.ui.main.activity.MainActivity;
+
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -43,19 +44,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         User userData = getUserData();
         if (userData != null) {
             loginViewModel.insertUser(userData);
-            loginBinding.loginProgressBar.setVisibility(View.VISIBLE);
-
-            new Handler().postDelayed(() -> {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                loginBinding.loginProgressBar.setVisibility(View.GONE);
-            }, 1500);
+            loginViewModel.getRequestState().observe(this, requestState -> {
+                switch (requestState.status) {
+                    case LOADING: {
+                        loginBinding.loginProgressBar.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                    case SUCCESS: {
+                        loginBinding.loginProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(this, requestState.data, Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                        break;
+                    }
+                    case ERROR: {
+                        loginBinding.loginProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(this, requestState.message, Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
+            });
         }
     }
 
     private User getUserData() {
-        String userName = loginBinding.loginUserNameTextInputLayout.getEditText().getText().toString();
-        String userAge = loginBinding.loginUserAgeTextInputLayout.getEditText().getText().toString();
-        String userJobTitle = loginBinding.loginJobTitleTextInputLayout.getEditText().getText().toString();
+        String userName = Objects.requireNonNull(loginBinding.loginUserNameTextInputLayout.getEditText()).getText().toString();
+        String userAge = Objects.requireNonNull(loginBinding.loginUserAgeTextInputLayout.getEditText()).getText().toString();
+        String userJobTitle = Objects.requireNonNull(loginBinding.loginJobTitleTextInputLayout.getEditText()).getText().toString();
 
         if (userName.trim().isEmpty() ||
                 userAge.trim().isEmpty() ||

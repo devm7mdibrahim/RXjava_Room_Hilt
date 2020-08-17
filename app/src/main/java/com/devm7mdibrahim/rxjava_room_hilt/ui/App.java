@@ -1,4 +1,4 @@
-package com.devm7mdibrahim.rxjava_room_hilt.ui.app;
+package com.devm7mdibrahim.rxjava_room_hilt.ui;
 
 import android.app.Application;
 

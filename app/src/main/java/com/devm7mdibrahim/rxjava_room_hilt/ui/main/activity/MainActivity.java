@@ -1,6 +1,8 @@
 package com.devm7mdibrahim.rxjava_room_hilt.ui.main.activity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -52,7 +54,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getDataFromDatabase() {
-        mainViewModel.getAllUsers().observe(this, this::displayData);
+        mainViewModel.requestAllUsers();
+        mainViewModel.getUsers().observe(this, data -> {
+            switch (data.status) {
+                case LOADING: {
+                    mainBinding.mainProgressBar.setVisibility(View.VISIBLE);
+                    break;
+                }
+                case SUCCESS: {
+                    mainBinding.mainProgressBar.setVisibility(View.GONE);
+                    displayData(data.data);
+                    break;
+                }
+                case ERROR: {
+                    Toast.makeText(this, data.message, Toast.LENGTH_SHORT).show();
+                    mainBinding.mainProgressBar.setVisibility(View.GONE);
+                    break;
+                }
+            }
+        });
     }
 
     private void displayData(List<User> users) {

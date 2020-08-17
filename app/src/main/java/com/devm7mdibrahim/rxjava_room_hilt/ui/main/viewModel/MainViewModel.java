@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.devm7mdibrahim.rxjava_room_hilt.data.local.entity.User;
 import com.devm7mdibrahim.rxjava_room_hilt.ui.main.repo.MainRepository;
+import com.devm7mdibrahim.rxjava_room_hilt.utils.DataState;
 
 import java.util.List;
 
@@ -19,7 +20,11 @@ public class MainViewModel extends ViewModel {
         this.mainRepository = mainRepository;
     }
 
-    public LiveData<List<User>> getAllUsers() {
+    public void requestAllUsers() {
+        mainRepository.requestAllUsers();
+    }
+
+    public LiveData<DataState<List<User>>> getUsers(){
         return mainRepository.getAllUsers();
     }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 
 @Dao
@@ -18,5 +19,5 @@ public interface UserDao {
     Completable insertUser(User user);
 
     @Query("SELECT * FROM User ORDER BY id ASC")
-    Flowable<List<User>> getAllUsers();
+    Single<List<User>> getAllUsers();
 }
